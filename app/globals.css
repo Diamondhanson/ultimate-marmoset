@@ -1,26 +1,250 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* ── Canopy: deep emerald greens, the brand's spine ──────────────────── */
+  --color-canopy-950: #051510;
+  --color-canopy-900: #0a2417;
+  --color-canopy-800: #0f3423;
+  --color-canopy-700: #16492f;
+  --color-canopy-600: #1d5c3b;
+
+  /* ── Fern: mid greens for accents, badges, links ─────────────────────── */
+  --color-fern-700: #246b45;
+  --color-fern-600: #2a7a4f;
+  --color-fern-500: #35935f;
+  --color-fern-400: #57ae7c;
+  --color-fern-300: #8ccaa6;
+  --color-fern-200: #bfe3ce;
+  --color-fern-100: #ddf1e5;
+  --color-fern-50: #eff8f3;
+
+  /* ── Gold: sunlight through the leaves; prices, CTAs, highlights ──────── */
+  --color-gold-700: #8c5f12;
+  --color-gold-600: #ad7817;
+  --color-gold-500: #c9911f;
+  --color-gold-400: #e2ac33;
+  --color-gold-300: #f0c766;
+  --color-gold-200: #f7e0a6;
+  --color-gold-100: #fcf2d8;
+
+  /* ── Bark: text + muted UI ───────────────────────────────────────────── */
+  --color-bark-900: #17211c;
+  --color-bark-700: #2f423a;
+  --color-bark-500: #566a60;
+  --color-bark-400: #7b8e84;
+  --color-bark-300: #a7b8ad;
+
+  /* ── Mist: page + surface backgrounds ────────────────────────────────── */
+  --color-mist-50: #f7fbf8;
+  --color-mist-100: #eef5f0;
+  --color-mist-200: #e1ebe4;
+  --color-mist-300: #cddcd2;
+
+  --font-display: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-mist-50);
+  color: var(--color-bark-900);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--color-gold-200);
+  color: var(--color-canopy-900);
+}
+
+/* ── Textures ───────────────────────────────────────────────────────────
+   A faint leaf-vein weave that stops the large flat panels from feeling
+   like plain blocks of colour. Applied to dark canopy sections. */
+
+.texture-canopy {
+  background-image:
+    radial-gradient(
+      circle at 18% 12%,
+      rgba(87, 174, 124, 0.16),
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 82% 78%,
+      rgba(226, 172, 51, 0.13),
+      transparent 46%
+    );
+}
+
+.texture-fronds {
+  background-image:
+    repeating-linear-gradient(
+      115deg,
+      rgba(22, 73, 47, 0.045) 0px,
+      rgba(22, 73, 47, 0.045) 1px,
+      transparent 1px,
+      transparent 13px
+    );
+}
+
+/* ── Motion ─────────────────────────────────────────────────────────────── */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Hanging-by-the-tail sway for decorative vines and leaves */
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(var(--sway-from, -5deg));
+  }
+  50% {
+    transform: rotate(var(--sway-to, 5deg));
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(-16px) translateX(6px);
+  }
+}
+
+@keyframes slow-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -180% 0;
+  }
+  100% {
+    background-position: 180% 0;
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out both;
+}
+
+.animate-page-in {
+  animation: fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-sway {
+  transform-origin: top center;
+  animation: sway 7s ease-in-out infinite;
+}
+
+.animate-drift {
+  animation: drift 9s ease-in-out infinite;
+}
+
+.animate-slow-zoom {
+  animation: slow-zoom 11s ease-out both;
+}
+
+/* Gold sheen that sweeps across the hero headline once on load */
+.text-sheen {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-gold-400) 20%,
+    var(--color-gold-200) 45%,
+    var(--color-gold-400) 70%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 5s ease-in-out 0.6s infinite;
+}
+
+/* Crossfading hero slides */
+.hero-slide {
+  transition: opacity 1.5s ease-in-out;
+}
+
+/* Scroll-reveal (toggled by the <Reveal> component) */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Thin themed scrollbar for the gallery strips */
+.scrollbar-slim {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-fern-300) transparent;
+}
+
+.scrollbar-slim::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scrollbar-slim::-webkit-scrollbar-thumb {
+  background: var(--color-fern-300);
+  border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-fade-up,
+  .animate-fade-in,
+  .animate-page-in,
+  .animate-sway,
+  .animate-drift,
+  .animate-slow-zoom,
+  .text-sheen {
+    animation: none !important;
+  }
+  .text-sheen {
+    color: var(--color-gold-300);
+  }
+  .hero-slide {
+    transition: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
