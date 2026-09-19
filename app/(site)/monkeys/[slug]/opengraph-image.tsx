@@ -1,8 +1,10 @@
 import { ImageResponse } from "next/og";
 import {
   BrandLockup,
+  OG_CONTENT_TYPE,
   OG_SIZE,
   loadFonts,
+  toShareImage,
   logoDataUri,
   palette,
   resolveImage,
@@ -16,7 +18,7 @@ import { formatAge } from "@/lib/utils";
 export const alt =
   "A hand-raised monkey available at Ultimate Marmoset & Capuchin Monkeys Home";
 export const size = OG_SIZE;
-export const contentType = "image/png";
+export const contentType = OG_CONTENT_TYPE;
 
 const statusLabel = {
   available: "Available now",
@@ -35,8 +37,8 @@ export default async function Image({
 
   // Unknown slug: still return a valid, on-brand card rather than a broken one.
   if (!monkey) {
-    return new ImageResponse(
-      (
+    return toShareImage(
+      new ImageResponse(
         <div
           style={{
             display: "flex",
@@ -48,17 +50,17 @@ export default async function Image({
           }}
         >
           <BrandLockup logo={logo} scale={1.6} />
-        </div>
+        </div>,
+        { ...size, fonts },
       ),
-      { ...size, fonts }
     );
   }
 
   const photo = await resolveImage(monkey.images[0]);
   const isAvailable = monkey.status === "available";
 
-  return new ImageResponse(
-    (
+  return toShareImage(
+    new ImageResponse(
       <div
         style={{
           display: "flex",
@@ -149,7 +151,6 @@ export default async function Image({
         {/* Photo side */}
         <div style={{ display: "flex", position: "relative", width: 540 }}>
           {photo && (
-             
             <img
               src={photo}
               alt=""
@@ -171,8 +172,8 @@ export default async function Image({
             }}
           />
         </div>
-      </div>
+      </div>,
+      { ...size, fonts },
     ),
-    { ...size, fonts }
   );
 }

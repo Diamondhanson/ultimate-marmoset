@@ -11,6 +11,39 @@ import { join } from "node:path";
 
 export const OG_SIZE = { width: 1200, height: 630 };
 
+/** Share cards are served as JPEG; see toShareImage() for why. */
+export const OG_CONTENT_TYPE = "image/jpeg";
+
+/**
+ * Re-encodes a generated card as JPEG.
+ *
+ * next/og always renders PNG, and a PNG containing a photograph lands around
+ * 850 KB. WhatsApp silently drops link-preview images much above 300 KB, so
+ * the card would never appear in a shared message. The same picture as JPEG is
+ * roughly 100 KB with no visible difference at preview size.
+ */
+export async function toShareImage(image: Response): Promise<Response> {
+  const png = Buffer.from(await image.arrayBuffer());
+  try {
+    const { default: sharp } = await import("sharp");
+    const jpeg = await sharp(png)
+      .flatten({ background: "#0a2417" }) // JPEG has no transparency
+      .jpeg({ quality: 82, progressive: true, mozjpeg: true })
+      .toBuffer();
+    return new Response(new Uint8Array(jpeg), {
+      headers: {
+        "Content-Type": "image/jpeg",
+        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800",
+      },
+    });
+  } catch {
+    // If sharp is unavailable, serve the PNG rather than no image at all.
+    return new Response(new Uint8Array(png), {
+      headers: { "Content-Type": "image/png", "Cache-Control": "public, max-age=3600" },
+    });
+  }
+}
+
 export const palette = {
   canopy900: "#0a2417",
   canopy800: "#0f3423",

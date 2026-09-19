@@ -1,8 +1,10 @@
 import { ImageResponse } from "next/og";
 import {
   BrandLockup,
+  OG_CONTENT_TYPE,
   OG_SIZE,
   loadFonts,
+  toShareImage,
   logoDataUri,
   palette,
   resolveImage,
@@ -11,7 +13,7 @@ import {
 export const alt =
   "Ultimate Marmoset & Capuchin Monkeys Home: hand-raised marmosets, capuchins and spider monkeys";
 export const size = OG_SIZE;
-export const contentType = "image/png";
+export const contentType = OG_CONTENT_TYPE;
 
 export default async function Image() {
   const [fonts, logo, photo] = await Promise.all([
@@ -20,8 +22,8 @@ export default async function Image() {
     resolveImage("/monkeys/marmoset-twins.jpg"),
   ]);
 
-  return new ImageResponse(
-    (
+  return toShareImage(
+    new ImageResponse(
       <div
         style={{
           display: "flex",
@@ -80,32 +82,34 @@ export default async function Image() {
           </div>
 
           <div style={{ display: "flex" }}>
-            {["Marmosets", "Capuchins", "Spider monkeys", "Squirrel monkeys"].map(
-              (chip) => (
-                <span
-                  key={chip}
-                  style={{
-                    fontFamily: "Jakarta",
-                    fontWeight: 800,
-                    fontSize: 16,
-                    color: palette.gold200,
-                    border: `1px solid ${palette.canopy700}`,
-                    borderRadius: 999,
-                    padding: "8px 16px",
-                    marginRight: 10,
-                  }}
-                >
-                  {chip}
-                </span>
-              )
-            )}
+            {[
+              "Marmosets",
+              "Capuchins",
+              "Spider monkeys",
+              "Squirrel monkeys",
+            ].map((chip) => (
+              <span
+                key={chip}
+                style={{
+                  fontFamily: "Jakarta",
+                  fontWeight: 800,
+                  fontSize: 16,
+                  color: palette.gold200,
+                  border: `1px solid ${palette.canopy700}`,
+                  borderRadius: 999,
+                  padding: "8px 16px",
+                  marginRight: 10,
+                }}
+              >
+                {chip}
+              </span>
+            ))}
           </div>
         </div>
 
         {/* Photo side */}
         <div style={{ display: "flex", position: "relative", width: 510 }}>
           {photo && (
-             
             <img
               src={photo}
               alt=""
@@ -127,8 +131,8 @@ export default async function Image() {
             }}
           />
         </div>
-      </div>
+      </div>,
+      { ...size, fonts },
     ),
-    { ...size, fonts }
   );
 }
