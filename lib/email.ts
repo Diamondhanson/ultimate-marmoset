@@ -108,12 +108,13 @@ export async function sendOrderNotification(order: NewOrder): Promise<void> {
   });
   if (error) throw new Error(`Failed to send reservation email: ${error.message}`);
 
-  // Best-effort confirmation to the family. On Resend's sandbox sender this
-  // only delivers to your own address, so failures here are not fatal.
+  // Best-effort confirmation to the family. The admin has already been
+  // notified above, so a failure here must not fail the reservation.
   try {
     await resend.emails.send({
       from: fromEmail(),
       to: order.email,
+      replyTo: adminEmail(),
       subject: `We received your reservation - ${site.shortName}`,
       html: wrap(
         "Thank you for your reservation request",
@@ -131,8 +132,8 @@ export async function sendOrderNotification(order: NewOrder): Promise<void> {
          <p>Warmly,<br/>The ${site.shortName} family</p>`
       ),
     });
-  } catch {
-    // ignore; sandbox senders can't reach arbitrary recipients
+  } catch (err) {
+    console.error("Reservation confirmation email failed:", err);
   }
 }
 
@@ -165,4 +166,34 @@ export async function sendContactNotification(
     html,
   });
   if (error) throw new Error(`Failed to send contact email: ${error.message}`);
+
+  // Best-effort confirmation to the sender, so they know it arrived.
+  try {
+    await resend.emails.send({
+      from: fromEmail(),
+      to: contact.email,
+      replyTo: adminEmail(),
+      subject: `We got your message - ${site.shortName}`,
+      html: wrap(
+        "Thanks for getting in touch",
+        `<p>Hi ${escapeHtml(contact.name.split(" ")[0] || contact.name)},</p>
+         <p>Your message reached us and one of us will read it personally. We
+         reply within 24 hours, and usually much sooner. Our hours are
+         ${site.hours}.</p>
+         ${
+           contact.subject
+             ? `<p style="margin:16px 0 4px;color:#55685e;">You wrote about</p>
+                <p style="margin:0 0 16px;font-weight:bold;">${escapeHtml(contact.subject)}</p>`
+             : ""
+         }
+         <p style="margin:0 0 4px;color:#55685e;">Your message</p>
+         <p style="margin:0;background:#eef4ee;border-radius:8px;padding:12px;">${escapeHtml(contact.message)}</p>
+         <p style="margin-top:20px;">If you need us sooner, call ${site.phone}.
+         There is no need to send your message again.</p>
+         <p>Warmly,<br/>The ${site.shortName} family</p>`
+      ),
+    });
+  } catch (err) {
+    console.error("Contact confirmation email failed:", err);
+  }
 }
