@@ -10,7 +10,7 @@ export const site = {
   tagline: "Hand-raised monkeys, born and raised in our home",
   url: "https://ultimatemarmoset.com",
   currency: "USD",
-  phone: "+1 (720) 680-0878",
+  phone: "+1 (720) 633-2087",
   email: "ultimatemonkeyshome@gmail.com",
   hours: "Monday to Saturday, 9am to 6pm",
   facebook: "https://www.facebook.com/",
