@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 
-export const metadata: Metadata = {
-  title: "Monkey Care Guide",
+export const metadata: Metadata = pageMeta({
+  title: "Pet Monkey Care Guide",
   description:
-    "An honest guide to living with a pet primate: daily routine, diet, housing, enrichment, veterinary care, legality, and the real twenty-year cost.",
-  alternates: { canonical: "/care-guide" },
-};
+    "How to care for a pet monkey: daily routine, diet, housing, enrichment, vet care, the law in your state, and what twenty years of care costs.",
+  path: "/care-guide",
+});
 
 const sections = [
   {
@@ -79,7 +80,7 @@ export default function CareGuidePage() {
             Read this first
           </p>
           <h1 className="mt-3 font-display text-4xl font-semibold text-mist-50 sm:text-5xl">
-            Living with a monkey
+            How to care for a pet monkey
           </h1>
           <p className="mt-5 max-w-2xl leading-relaxed text-mist-200/80">
             This is the guide we wish every prospective owner read before they

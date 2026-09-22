@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
 import { Frond } from "./Leaf";
+import { categories } from "@/lib/categories";
 import { site } from "@/lib/site";
 
 const explore = [
@@ -26,7 +27,7 @@ export function Footer() {
         className="animate-sway pointer-events-none absolute -right-10 -top-8 h-56 w-44 text-fern-500/10"
       />
 
-      <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 sm:grid-cols-2 lg:grid-cols-5">
         <div className="sm:col-span-2 lg:col-span-1">
           <div className="flex items-center gap-3">
             <Logo className="h-11 w-11" />
@@ -53,6 +54,24 @@ export function Footer() {
                   href={link.href}
                 >
                   {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold-400">
+            Monkeys for sale
+          </p>
+          <ul className="mt-4 space-y-2.5 text-sm">
+            {categories.map((c) => (
+              <li key={c.slug}>
+                <Link
+                  className="text-mist-200/85 transition-colors hover:text-gold-300"
+                  href={`/${c.slug}`}
+                >
+                  {c.name} for sale
                 </Link>
               </li>
             ))}

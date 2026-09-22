@@ -5,7 +5,9 @@ import { AddToCartButton } from "@/components/AddToCartButton";
 import { Gallery } from "@/components/Gallery";
 import { MonkeyCard } from "@/components/MonkeyCard";
 import { StatusBadge } from "@/components/StatusBadge";
+import { categoryForSpecies } from "@/lib/categories";
 import { getMonkeyBySlug, getMonkeys } from "@/lib/data";
+import { pageMeta } from "@/lib/seo";
 import { formatPrice, site } from "@/lib/site";
 import { formatAge, formatDate } from "@/lib/utils";
 
@@ -20,30 +22,22 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const monkey = await getMonkeyBySlug(slug);
-  if (!monkey) return { title: "Monkey not found" };
+  if (!monkey) return { title: "Monkey not found", robots: { index: false } };
 
-  const title = `${monkey.name} | ${monkey.species} for Sale`;
-  const description = `Meet ${monkey.name}, a ${formatAge(
-    monkey.date_of_birth
-  )} ${monkey.species.toLowerCase()} (${monkey.markings}). ${formatPrice(
-    monkey.price
-  )}, hand-raised, vet-checked, and backed by our written health guarantee.`;
+  // "Common Marmoset (finger monkey)" reads badly in a search title.
+  const species = monkey.species.replace(/\s*\(.*?\)\s*/g, " ").trim();
+  // "3 months old" -> "3-month-old", so the sentence reads naturally.
+  const age = formatAge(monkey.date_of_birth)
+    .replace(/^(\d+) (week|month|year)s? old$/, "$1-$2-old")
+    .toLowerCase();
 
-  return {
-    title,
-    description,
-    alternates: { canonical: `/monkeys/${monkey.slug}` },
-    openGraph: {
-      title,
-      description,
-      url: `/monkeys/${monkey.slug}`,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
-  };
+  return pageMeta({
+    title: `${monkey.name}, ${species} for Sale`,
+    description: `Meet ${monkey.name}, a ${age} ${species.toLowerCase()} for sale at ${formatPrice(
+      monkey.price
+    )}. Hand-raised in our home, vet-checked, and sold with a written health guarantee.`,
+    path: `/monkeys/${monkey.slug}`,
+  });
 }
 
 export default async function MonkeyDetailPage({
@@ -74,6 +68,8 @@ export default async function MonkeyDetailPage({
     ["Diaper trained", monkey.diaper_trained ? "Yes" : "In progress"],
   ];
 
+  const category = categoryForSpecies(monkey.species);
+
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -82,12 +78,22 @@ export default async function MonkeyDetailPage({
       {
         "@type": "ListItem",
         position: 2,
-        name: "Available Monkeys",
+        name: "Monkeys for sale",
         item: `${site.url}/monkeys`,
       },
+      ...(category
+        ? [
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: category.name,
+              item: `${site.url}/${category.slug}`,
+            },
+          ]
+        : []),
       {
         "@type": "ListItem",
-        position: 3,
+        position: category ? 4 : 3,
         name: monkey.name,
         item: `${site.url}/monkeys/${monkey.slug}`,
       },
@@ -129,8 +135,19 @@ export default async function MonkeyDetailPage({
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-16">
         <nav className="text-sm text-bark-400">
           <Link href="/monkeys" className="transition-colors hover:text-canopy-700">
-            Available monkeys
+            Monkeys for sale
           </Link>
+          {category && (
+            <>
+              <span className="mx-2">/</span>
+              <Link
+                href={`/${category.slug}`}
+                className="transition-colors hover:text-canopy-700"
+              >
+                {category.name}
+              </Link>
+            </>
+          )}
           <span className="mx-2">/</span>
           <span className="font-semibold text-bark-700">{monkey.name}</span>
         </nav>
@@ -150,7 +167,16 @@ export default async function MonkeyDetailPage({
             </div>
 
             <p className="mt-3 text-base font-semibold text-fern-600">
-              {monkey.species}
+              {category ? (
+                <Link
+                  href={`/${category.slug}`}
+                  className="underline-offset-4 hover:underline"
+                >
+                  {monkey.species}
+                </Link>
+              ) : (
+                monkey.species
+              )}
             </p>
             <p className="mt-1 text-bark-400">
               {monkey.gender === "female" ? "Female" : "Male"} ·{" "}

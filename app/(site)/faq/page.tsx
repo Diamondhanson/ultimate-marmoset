@@ -1,14 +1,21 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
+import { getMonkeys } from "@/lib/data";
 import { formatPrice, site } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Frequently Asked Questions",
+export const metadata: Metadata = pageMeta({
+  title: "Pet Monkey FAQ: Cost, Legality, Care",
   description:
-    "Answers to the questions families ask most: legality, price, delivery, deposits, diet, lifespan, and whether a monkey is right for your home.",
-  alternates: { canonical: "/faq" },
-};
+    "Straight answers about buying a pet monkey: price, whether it is legal where you live, delivery, deposits, diet, lifespan and diaper training.",
+  path: "/faq",
+});
+
+// Refreshed in the background so the price answer tracks the live listings.
+export const revalidate = 300;
+
+const PRICE_PLACEHOLDER = "__PRICE_RANGE__";
 
 const faqs = [
   {
@@ -17,7 +24,7 @@ const faqs = [
   },
   {
     q: "How much does a monkey cost?",
-    a: "Our marmosets start around $3,800 and capuchins and spider monkeys run from roughly $8,000 to $12,000, depending on species, age and temperament. Every price is listed openly on the animal’s own page. What you pay up front is the smallest part of the lifetime cost. Our care guide sets out a realistic budget.",
+    a: `${PRICE_PLACEHOLDER} It depends on species, age and temperament, and every price is listed openly on the animal’s own page. What you pay up front is the smallest part of the lifetime cost. Our care guide sets out a realistic budget.`,
   },
   {
     q: "Why do you charge a deposit just to visit?",
@@ -53,11 +60,29 @@ const faqs = [
   },
 ];
 
-export default function FaqPage() {
+/** "Right now our monkeys range from $1,300 to $7,500." from live listings. */
+function priceSentence(prices: number[]): string {
+  if (prices.length === 0) {
+    return "We have no monkeys listed at the moment, so ask us for current prices.";
+  }
+  const low = Math.min(...prices);
+  const high = Math.max(...prices);
+  return low === high
+    ? `Right now our available monkeys are ${formatPrice(low)}.`
+    : `Right now our available monkeys range from ${formatPrice(low)} to ${formatPrice(high)}.`;
+}
+
+export default async function FaqPage() {
+  const monkeys = await getMonkeys();
+  const range = priceSentence(
+    monkeys.filter((m) => m.status === "available").map((m) => m.price)
+  );
+  const items = faqs.map((f) => ({ ...f, a: f.a.replace(PRICE_PLACEHOLDER, range) }));
+
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: faqs.map((item) => ({
+    mainEntity: items.map((item) => ({
       "@type": "Question",
       name: item.q,
       acceptedAnswer: { "@type": "Answer", text: item.a },
@@ -77,7 +102,7 @@ export default function FaqPage() {
             Straight answers
           </p>
           <h1 className="mt-3 font-display text-4xl font-semibold text-mist-50 sm:text-5xl">
-            Frequently asked questions
+            Pet monkey questions and answers
           </h1>
           <p className="mt-5 max-w-2xl leading-relaxed text-mist-200/80">
             The ten questions we answer most often, answered properly. If yours
@@ -88,7 +113,7 @@ export default function FaqPage() {
 
       <div className="mx-auto max-w-4xl px-4 py-14 sm:px-6 lg:py-20">
         <div className="space-y-3">
-          {faqs.map((item, i) => (
+          {items.map((item, i) => (
             <Reveal key={item.q} delay={Math.min(i, 6) * 60}>
               <details className="group overflow-hidden rounded-3xl border border-mist-200 bg-white transition-colors duration-300 open:border-fern-200 open:bg-fern-50/40">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-5 px-7 py-5 font-display text-lg font-semibold text-canopy-900 marker:content-none">

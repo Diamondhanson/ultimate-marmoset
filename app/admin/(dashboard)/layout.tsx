@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Logo } from "@/components/Logo";
 import { getAdminSession } from "@/lib/auth";
 import { logout } from "@/app/actions/auth";
 import { site } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  robots: { index: false, follow: false },
+};
 
 const nav = [
   { href: "/admin", label: "Overview" },

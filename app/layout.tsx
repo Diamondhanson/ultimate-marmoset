@@ -16,50 +16,59 @@ const jakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+const HOME_TITLE = "Marmoset & Capuchin Monkeys for Sale | Ultimate Marmoset";
+const HOME_DESCRIPTION =
+  "Hand-raised marmosets, capuchins, spider and squirrel monkeys for sale. Bottle-fed in our home, vet-checked, and sold with a written health guarantee.";
+
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default:
-      "Marmosets & Capuchin Monkeys for Sale | Hand-Raised Primate Nursery | Ultimate Marmoset",
+    default: HOME_TITLE,
     template: `%s | ${site.shortName}`,
   },
-  description:
-    "Hand-raised marmosets, capuchins, spider monkeys and squirrel monkeys from a small in-home primate nursery. Bottle-fed, vet-checked, diaper-trained, and placed with a written health guarantee.",
+  description: HOME_DESCRIPTION,
   applicationName: site.shortName,
   category: "Pets",
-  alternates: { canonical: "/" },
+  // No canonical here on purpose: every page sets its own. A canonical in the
+  // root layout is inherited by any page that forgets one, which tells Google
+  // that page is a duplicate of the home page.
   keywords: [
     "marmoset monkey for sale",
     "capuchin monkey for sale",
     "finger monkey for sale",
-    "pygmy marmoset",
+    "pygmy marmoset for sale",
     "spider monkey for sale",
     "squirrel monkey for sale",
     "baby monkey for sale",
+    "pet monkey for sale",
     "hand-raised monkeys",
-    "primate nursery",
-    "bottle-fed capuchin",
-    "diaper-trained monkey",
-    "exotic pet monkey breeder",
   ],
   openGraph: {
     type: "website",
-    url: "/",
     siteName: site.name,
-    title: `Hand-Raised Marmosets & Capuchins | ${site.tagline}`,
-    description:
-      "A small in-home primate nursery. Bottle-raised marmosets, capuchins and spider monkeys, vet-checked and backed by a written health guarantee.",
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: `Hand-Raised Marmosets & Capuchins | ${site.tagline}`,
-    description:
-      "A small in-home primate nursery. Bottle-raised marmosets, capuchins and spider monkeys, vet-checked and backed by a written health guarantee.",
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
+  // Google Search Console HTML-tag verification. Set GOOGLE_SITE_VERIFICATION
+  // to the code from the "HTML tag" method (just the content value).
+  ...(process.env.GOOGLE_SITE_VERIFICATION && {
+    verification: { google: process.env.GOOGLE_SITE_VERIFICATION },
+  }),
 };
 
 export default function RootLayout({

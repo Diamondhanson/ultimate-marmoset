@@ -6,8 +6,12 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/admin", "/reserve"],
+      // Private or pointless for search. The ?species= filter views are left
+      // crawlable on purpose: they carry a noindex tag, and Google has to be
+      // able to fetch a page to see that tag.
+      disallow: ["/admin", "/reserve", "/brand-assets"],
     },
     sitemap: `${site.url}/sitemap.xml`,
+    host: site.url,
   };
 }

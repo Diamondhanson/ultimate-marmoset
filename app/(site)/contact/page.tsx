@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
 import { ContactForm } from "@/components/ContactForm";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Contact Us",
+export const metadata: Metadata = pageMeta({
+  title: "Contact Our Monkey Nursery",
   description:
-    "Call, text or email our primate nursery. We answer every enquiry ourselves, usually within 24 hours.",
-  alternates: { canonical: "/contact" },
-};
+    "Call, text or email Ultimate Marmoset about a monkey, a visit or delivery. We answer every message ourselves, usually within 24 hours.",
+  path: "/contact",
+});
 
 export default function ContactPage() {
   const channels = [
@@ -28,7 +29,7 @@ export default function ContactPage() {
             Get in touch
           </p>
           <h1 className="mt-3 font-display text-4xl font-semibold text-mist-50 sm:text-5xl">
-            Talk to us
+            Contact us about a monkey
           </h1>
           <p className="mt-5 max-w-2xl leading-relaxed text-mist-200/80">
             Whether you’re ready to reserve or just working out whether a

@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Health Guarantee & Policies",
   description:
-    "Our written health guarantee: what every monkey leaves with, the 72-hour veterinary window, the one-year congenital cover, and what the guarantee does not include.",
-  alternates: { canonical: "/health-guarantee" },
-};
+    "Our written health guarantee: what every monkey goes home with, the 72-hour vet check, one year of congenital cover, and what is not covered.",
+  path: "/health-guarantee",
+});
 
 const included = [
   "A documented exotic-vet wellness examination within 10 days of going home",

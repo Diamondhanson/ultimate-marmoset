@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "About Our Primate Nursery",
+export const metadata: Metadata = pageMeta({
+  title: "About Our Monkey Nursery",
   description:
-    "Meet the family behind our in-home primate nursery: how we bottle-raise every baby, how we choose families, and why we turn people away.",
-  alternates: { canonical: "/about" },
-};
+    "Meet the family behind our in-home monkey nursery: how we bottle-raise every baby, how we choose homes, and why we turn some people away.",
+  path: "/about",
+});
 
 const values = [
   {
@@ -36,7 +37,7 @@ export default function AboutPage() {
               Who we are
             </p>
             <h1 className="mt-3 font-display text-4xl font-semibold text-mist-50 sm:text-5xl">
-              A nursery, not a business park
+              A small monkey nursery, run from our home
             </h1>
             <p className="mt-5 leading-relaxed text-mist-200/80">
               {site.name} is a family operation. There is no warehouse, no sales

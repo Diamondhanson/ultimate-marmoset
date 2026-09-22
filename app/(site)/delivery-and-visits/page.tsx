@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 import { formatPrice, site } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Delivery, Pickup & Visit Appointment Policy",
+export const metadata: Metadata = pageMeta({
+  title: "Monkey Delivery, Pickup & Visits",
   description:
-    "How delivery, pickup and visit appointments work at our primate nursery, including the fully refundable $500 appointment deposit, what it covers, and how to schedule.",
-  alternates: { canonical: "/delivery-and-visits" },
-};
+    "How delivery, pickup and visit appointments work, including the fully refundable $500 appointment deposit and how to book a time with us.",
+  path: "/delivery-and-visits",
+});
 
 const deposit = formatPrice(site.appointmentDeposit);
 

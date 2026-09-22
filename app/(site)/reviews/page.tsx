@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { ReviewCard } from "@/components/ReviewCard";
 import { ReviewForm } from "@/components/ReviewForm";
 import { Reveal } from "@/components/Reveal";
@@ -7,12 +8,12 @@ import { getApprovedReviews } from "@/lib/data";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Reviews from Our Families",
   description:
-    "What families say about buying a hand-raised marmoset, capuchin or spider monkey from our nursery, and how the process actually went.",
-  alternates: { canonical: "/reviews" },
-};
+    "Read reviews from families who bought a hand-raised marmoset, capuchin or spider monkey from our nursery, and how the whole process went.",
+  path: "/reviews",
+});
 
 export default async function ReviewsPage() {
   const reviews = await getApprovedReviews();

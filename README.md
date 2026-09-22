@@ -56,6 +56,8 @@ automatically; no code changes are needed.
 | `lib/data.ts` | The single data layer — falls back to sample data without Supabase |
 | `lib/email.ts` | Resend templates; no-ops cleanly without a key |
 | `lib/site.ts` | Business details: name, phone, email, socials, deposit amount |
+| `lib/seo.ts` | Builds each page's search title, description, social tags and canonical together |
+| `lib/categories.ts` | The species landing pages (`/capuchin-monkeys-for-sale` etc.): copy, facts, FAQs, and which listings each one shows |
 | `lib/sample-monkeys.ts` | Preview-mode catalogue |
 | `supabase/schema.sql` | One-shot database + storage setup |
 | `proxy.ts` | Auth gate for `/admin` |

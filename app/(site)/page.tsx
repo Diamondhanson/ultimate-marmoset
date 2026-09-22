@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { HeroSlideshow } from "@/components/HeroSlideshow";
@@ -6,11 +7,20 @@ import { Reveal } from "@/components/Reveal";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { Frond, Vine } from "@/components/Leaf";
 import { getApprovedReviews, getMonkeys } from "@/lib/data";
+import { pageMeta } from "@/lib/seo";
 import { formatPrice, site } from "@/lib/site";
 
 // Served from cache and refreshed in the background; admin edits bust it
 // instantly via revalidatePath.
 export const revalidate = 300;
+
+export const metadata: Metadata = pageMeta({
+  title: "Marmoset & Capuchin Monkeys for Sale | Ultimate Marmoset",
+  absoluteTitle: true,
+  description:
+    "Hand-raised marmosets, capuchins, spider and squirrel monkeys for sale. Bottle-fed in our home, vet-checked, and sold with a written health guarantee.",
+  path: "/",
+});
 
 const heroImages = [
   "/monkeys/spider-monkey-portrait.jpg",
@@ -61,7 +71,7 @@ const species = [
       "Palm-sized, chirpy, and the most manageable primate we raise. Best for a calm home with time to spare.",
     span: "Lives 12 to 18 years",
     image: "/monkeys/marmoset-portrait.jpg",
-    href: "/monkeys?species=Common+Marmoset",
+    href: "/marmosets-for-sale",
   },
   {
     name: "Capuchins",
@@ -69,7 +79,7 @@ const species = [
       "The clever ones. Quick to learn, quick to cause trouble, and a commitment for life.",
     span: "Lives 25 to 40 years",
     image: "/monkeys/capuchin-baby.jpg",
-    href: "/monkeys?species=Brown+Capuchin",
+    href: "/capuchin-monkeys-for-sale",
   },
   {
     name: "Spider monkeys",
@@ -77,7 +87,7 @@ const species = [
       "All limbs and prehensile tail. Deeply affectionate, and they need serious vertical space to be happy.",
     span: "Lives 25 to 35 years",
     image: "/monkeys/spider-monkey-bag.jpg",
-    href: "/monkeys?species=Spider+Monkey",
+    href: "/spider-monkeys-for-sale",
   },
   {
     name: "Squirrel monkeys",
@@ -85,7 +95,7 @@ const species = [
       "Small, bright and permanently busy. Wonderful for a lively household that is home most of the day.",
     span: "Lives 15 to 20 years",
     image: "/monkeys/monkeys-and-dog.jpg",
-    href: "/monkeys?species=Squirrel+Monkey",
+    href: "/squirrel-monkeys-for-sale",
   },
 ];
 
@@ -128,9 +138,9 @@ export default async function HomePage() {
     name: site.name,
     url: site.url,
     image: `${site.url}/monkeys/marmoset-twins.jpg`,
+    logo: `${site.url}/brand/logo-512.png`,
     email: site.email,
     telephone: site.phone,
-    sameAs: [site.facebook, site.instagram],
     openingHours: "Mo-Sa 09:00-18:00",
     priceRange: "$$$",
     description:
@@ -146,11 +156,23 @@ export default async function HomePage() {
     }),
   };
 
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: site.name,
+    alternateName: site.shortName,
+    url: site.url,
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(businessJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
       />
 
       {/* ── Hero ─────────────────────────────────────────────────────── */}
@@ -168,15 +190,15 @@ export default async function HomePage() {
 
         <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-4 py-20 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:py-28">
           <div className="max-w-2xl">
-            <p className="animate-fade-up inline-flex items-center gap-2 rounded-full border border-fern-400/30 bg-canopy-800/70 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-gold-300 backdrop-blur">
-              Hand-reared in our home · Not a broker
-            </p>
+            <h1 className="animate-fade-up inline-flex items-center gap-2 rounded-full border border-fern-400/30 bg-canopy-800/70 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-gold-300 backdrop-blur">
+              Hand-raised marmoset &amp; capuchin monkeys for sale
+            </h1>
 
-            <h1 className="animate-fade-up mt-7 font-display text-4xl leading-[1.08] font-semibold text-mist-50 [animation-delay:120ms] sm:text-5xl lg:text-6xl">
+            <p className="animate-fade-up mt-7 font-display text-4xl leading-[1.08] font-semibold text-mist-50 [animation-delay:120ms] sm:text-5xl lg:text-6xl">
               Tiny hands that will
               <br className="hidden sm:block" />{" "}
               <span className="text-sheen">hold on for decades</span>
-            </h1>
+            </p>
 
             <p className="animate-fade-up mt-7 max-w-lg text-lg leading-relaxed text-mist-200/85 [animation-delay:240ms]">
               We bottle-feed every baby ourselves, from the 4am formula to the

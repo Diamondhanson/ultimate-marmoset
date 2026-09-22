@@ -3,6 +3,8 @@ import Link from "next/link";
 import { MonkeyCard } from "@/components/MonkeyCard";
 import { Reveal } from "@/components/Reveal";
 import { getMonkeys, getSpeciesList } from "@/lib/data";
+import { categories } from "@/lib/categories";
+import { pageMeta } from "@/lib/seo";
 import { site } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
@@ -13,21 +15,15 @@ export async function generateMetadata({
   searchParams: Promise<{ species?: string }>;
 }): Promise<Metadata> {
   const { species } = await searchParams;
-  const title = species
-    ? `${species}s for Sale`
-    : "Available Monkeys for Sale";
-  const description = species
-    ? `Hand-raised ${species.toLowerCase()}s for sale from our in-home primate nursery. Bottle-fed, vet-checked, and placed with a written health guarantee. See photos, temperaments and prices.`
-    : "Browse the hand-raised marmosets, capuchins, spider monkeys and squirrel monkeys available now. Photos, temperaments, health records and prices for every baby in our nursery.";
-  const canonical = species
-    ? `/monkeys?species=${encodeURIComponent(species)}`
-    : "/monkeys";
-  return {
-    title,
-    description,
-    alternates: { canonical },
-    openGraph: { title, description, url: canonical },
-  };
+  const meta = pageMeta({
+    title: "Baby Monkeys for Sale",
+    description:
+      "Every baby monkey we have for sale: marmosets, capuchins, spider and squirrel monkeys. Photos, age, temperament, health records and prices.",
+    path: "/monkeys",
+  });
+  // A ?species= filter is a thin copy of a species landing page. Keep it out
+  // of the index and point Google at the full list instead.
+  return species ? { ...meta, robots: { index: false, follow: true } } : meta;
 }
 
 export default async function MonkeysPage({
@@ -46,7 +42,7 @@ export default async function MonkeysPage({
   const itemListJsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: species ? `${species}s for sale` : "Monkeys for sale",
+    name: species ? `${species} for sale` : "Baby monkeys for sale",
     numberOfItems: monkeys.length,
     itemListElement: monkeys.map((monkey, i) => ({
       "@type": "ListItem",
@@ -69,13 +65,24 @@ export default async function MonkeysPage({
             The nursery
           </p>
           <h1 className="mt-3 font-display text-4xl font-semibold text-mist-50 sm:text-5xl">
-            {species ? `${species}s for sale` : "Available monkeys"}
+            {species ? `${species} for sale` : "Baby monkeys for sale"}
           </h1>
           <p className="mt-4 max-w-2xl leading-relaxed text-mist-200/80">
             Every baby below was born and bottle-raised here. Open a profile to
             read their temperament, health record and full photo set, then
             add them to your list. Reserving is free and nothing is charged online.
           </p>
+          <nav aria-label="Monkeys by type" className="mt-6 flex flex-wrap gap-2">
+            {categories.map((c) => (
+              <Link
+                key={c.slug}
+                href={`/${c.slug}`}
+                className="rounded-full border border-mist-50/20 px-4 py-2 text-sm font-semibold text-mist-100 transition-colors hover:border-gold-300 hover:text-gold-300"
+              >
+                {c.name}
+              </Link>
+            ))}
+          </nav>
           <p className="mt-6 text-sm font-semibold text-gold-300">
             {available} available now · {monkeys.length} listed
           </p>
